@@ -44,7 +44,7 @@ public class Main {
             }
             System.out.println("Do you want to play one more game? Type 'y' if you want to continue");
         }
-        while ("y".equals(scanner.next()));
+        while ("y".equals(scanner.next())); //TODO while correct
         System.out.println("Statistics: ");
 
         for (GameResult r: results) {
