@@ -10,9 +10,8 @@ public class Main {
     public static void main(String[] args) { //psvm - public static void main(String[] args) { }
 
         do {
-            System.out.println("What's your name?");
-            String name = scanner.next();
-            System.out.println("Hello, " + name + "!");
+            String name = greet();
+
             int myNum = generateNumber();
             System.out.println("What's the number?");
             boolean isLooser = true;
@@ -42,14 +41,22 @@ public class Main {
             if (isLooser) {
                 System.out.println("You Lost!");
             }
-            System.out.println("Do you want to play one more game? Type 'y' if you want to continue");
+
         }
-        while ("y".equals(scanner.next())); //TODO while correct
+        while (wantToContinue()); //TODO while correct
         System.out.println("Statistics: ");
 
         for (GameResult r: results) {
             r.print();
         }
+    }
+
+    private static String greet() {
+        System.out.println("What's your name?");
+        String name = scanner.next();
+        System.out.println("Hello, " + name + "!");
+
+        return name;
     }
 
     private static int generateNumber() {
@@ -70,6 +77,22 @@ public class Main {
             } catch (InputMismatchException e) {
                 scanner.next();
                 System.out.println("You are cheater");
+            }
+        }
+    }
+
+    private static boolean wantToContinue(){
+        System.out.println("Do you want to play one more game? (y/n)");
+        while (true) {
+            String input = scanner.next();
+            if (input.equals("y")){
+                return  true;
+            }
+            else if (input.equals("n")){
+                return  false;
+            }
+            else {
+                System.out.println("Enter 'y' to continue or 'n' to finish");
             }
         }
     }
