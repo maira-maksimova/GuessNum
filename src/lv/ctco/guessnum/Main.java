@@ -1,14 +1,19 @@
 package lv.ctco.guessnum;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.*;
 
 public class Main {
+    public static final File RESULTS_FILE = new File("results.txt");
     static Scanner scanner = new Scanner(System.in);
     static Random rand = new Random(); //Ctrl+Q = quick help
     static List<GameResult> results = new ArrayList<>();
 
     public static void main(String[] args) { //psvm - public static void main(String[] args) { }
-
+        loadResults();
         do {
             String name = greet();
 
@@ -44,10 +49,15 @@ public class Main {
 
         }
         while (wantToContinue()); //TODO while correct
+        saveResults();
+        printResults();
+    }
+
+    private static void printResults() {
         System.out.println("Statistics: ");
 
-        for (GameResult r: results) {
-            r.print();
+        for (GameResult r : results) {
+            r.printResult();
         }
     }
 
@@ -81,20 +91,43 @@ public class Main {
         }
     }
 
-    private static boolean wantToContinue(){
+    private static boolean wantToContinue() {
         System.out.println("Do you want to play one more game? (y/n)");
         while (true) {
             String input = scanner.next();
-            if (input.equals("y")){
-                return  true;
-            }
-            else if (input.equals("n")){
-                return  false;
-            }
-            else {
+            if (input.equals("y")) {
+                return true;
+            } else if (input.equals("n")) {
+                return false;
+            } else {
                 System.out.println("Enter 'y' to continue or 'n' to finish");
             }
         }
     }
 
+    private static void saveResults() {
+        //Shift + F6 rename variable //Ctrl + Alt+ C  - extract constant
+
+        try (PrintWriter fileOut = new PrintWriter(RESULTS_FILE)) {
+            for (GameResult r : results) {
+                fileOut.print(String.format("%s %d %d\n", r.name, r.triesCount, r.duration));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadResults() {
+        try (Scanner in = new Scanner(RESULTS_FILE)) {
+            while (in.hasNext()) {
+                GameResult gr = new GameResult();
+                gr.name = in.next();
+                gr.triesCount = in.nextInt();
+                gr.duration = in.nextLong();
+                results.add(gr);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -8,8 +8,12 @@ public class GameResult {
     int triesCount;
     long duration;
 
-    public void print() {
-        System.out.printf("%s %d %.2f sec\n", this.name, this.triesCount, this.duration / 1000.0); //%s - string %d = int %f decimal
+    public String formattedResult() {
+       return String.format("%s %d %.2f sec\n", this.name, this.triesCount, this.duration / 1000.0); //%s - string %d = int %f decimal
+    }
+
+    public void printResult(){
+        System.out.print(formattedResult());
     }
 }
 
