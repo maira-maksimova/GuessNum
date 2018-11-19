@@ -3,7 +3,6 @@ package lv.ctco.guessnum;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.*;
 
 public class Main {
@@ -56,9 +55,14 @@ public class Main {
     private static void printResults() {
         System.out.println("Statistics: ");
 
-        for (GameResult r : results) {
-            r.printResult();
-        }
+        results.stream()
+                .sorted(Comparator.<GameResult>comparingInt(r -> r.triesCount)
+                        .<GameResult>thenComparingLong(r -> r.duration))
+                .limit(3)
+                .forEach(r -> System.out.printf("Player %s has done %d tries and it took %.2f sec\n",
+                        r.name,
+                        r.triesCount,
+                        r.duration / 1000.0));
     }
 
     private static String greet() {
@@ -109,9 +113,11 @@ public class Main {
         //Shift + F6 rename variable //Ctrl + Alt+ C  - extract constant
 
         try (PrintWriter fileOut = new PrintWriter(RESULTS_FILE)) {
-            for (GameResult r : results) {
-                fileOut.print(String.format("%s %d %d\n", r.name, r.triesCount, r.duration));
-            }
+            int skipCount = results.size() - 5;
+
+            results.stream()
+                    .skip(skipCount)
+                    .forEach(r -> fileOut.printf("%s %d %d\n", r.name, r.triesCount, r.duration));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
